@@ -1,0 +1,11 @@
+name: HomeSystem
+version: '${version}'
+main: me.shingas.homeSystem.HomeSystem
+api-version: '26.2'
+load: POSTWORLD
+authors: [ Shingas ]
+folia-supported: true
+description: Per-player homes with per-world and permission-based limits.
+depend: [ "GriefPrevention" ]
+libraries:
+  - "com.mysql:mysql-connector-j:9.2.0"

@@ -1,0 +1,40 @@
+Prefix: "<dark_gray>[</dark_gray><yellow>HomeSystem<dark_gray>]</dark_gray>"
+
+# Use the same MySQL database on every backend server.
+database:
+  host: "change-me"
+  port: 3306
+  name: "change-me"
+  username: "change-me"
+  password: "change-me"
+  table-prefix: "homesystem_"
+
+# This must match the server name configured in the proxy.
+server-name: "vsmp"
+sethome-blocked-servers:
+  - "mall"
+
+homes:
+  world-limits:
+    # Limit per-world set home limits, this overrides any multiple-homes config, players with vsmp.homes.admin will bypass this
+    # Examples
+    # spawn: 0 - This means players cannot set homes in the spawn world
+    # main: 5 - This maxes out the set homes to 5 even if the player has a lower multiple-homes config
+    spawn: 0
+    resources-world: 1
+  multiple-homes:
+    #Set limits using permission such as
+    # cooler: 2
+    # Players with vsmp.homes.cooler permission will be able to set 2 homes
+  messages:
+    home-set: "<prefix> <green>Home <white><home></white> set to current location.</green>"
+    home-deleted: "<prefix> <green>Home <white><home></white> has been removed.</green>"
+    home-teleported: "<prefix> <green>Teleported to <white><home></white>.</green>"
+    home-not-found: "<prefix> <red>That home does not exist.</red>"
+    home-limit: "<prefix> <red>You have reached your home limit in this world.</red>"
+    home-list-header: "<prefix> <gold>Your homes:</gold><yellow><homes></yellow>"
+    home-list-empty: "<prefix><red>You don't have any homes set.</red>"
+    not-allowed: "<prefix> <red>You cannot claim here.</red>"
+    no-claim-permission: "<prefix> <red>You are not trusted in this claim.</red>"
+    home-world-unavailable: "<prefix> <red>The world for that home is not available on this server.</red>"
+    proxy-unavailable: "<prefix> <red>Could not connect you to the home server.</red>"
