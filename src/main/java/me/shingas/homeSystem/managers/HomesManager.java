@@ -107,7 +107,7 @@ public class HomesManager {
         int max = section.getInt("default", 1);
         for (String group : section.getKeys(false)) {
             if (!group.equalsIgnoreCase("default")
-                    && player.hasPermission("vsmp.homes." + group)) {
+                    && player.hasPermission("homesystem.homes." + group)) {
                 max = Math.max(max, section.getInt(group));
             }
         }

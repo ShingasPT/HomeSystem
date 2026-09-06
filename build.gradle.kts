@@ -13,6 +13,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:26.2.build.+")
     compileOnly("com.github.TechFortress:GriefPrevention:16.18")
     compileOnly("com.mysql:mysql-connector-j:9.2.0")
+    compileOnly("com.zaxxer:HikariCP:6.3.0")
 }
 
 java {

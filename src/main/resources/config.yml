@@ -8,6 +8,12 @@ database:
   username: "change-me"
   password: "change-me"
   table-prefix: "homesystem_"
+  pool:
+    maximumSize: 5
+    minimumIdle: 1
+    connectionTimeout: 5000
+    idleTimeout: 600000
+    maxLifetime: 1800000
 
 # This must match the server name configured in the proxy.
 server-name: "vsmp"
@@ -25,7 +31,7 @@ homes:
   multiple-homes:
     #Set limits using permission such as
     # cooler: 2
-    # Players with vsmp.homes.cooler permission will be able to set 2 homes
+    # Players with homesystem.homes.cooler permission will be able to set 2 homes
   messages:
     home-set: "<prefix> <green>Home <white><home></white> set to current location.</green>"
     home-deleted: "<prefix> <green>Home <white><home></white> has been removed.</green>"

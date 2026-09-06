@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -69,8 +70,18 @@ public final class HomeSystem extends JavaPlugin implements Listener {
             return;
         }
 
-        player.teleport(location);
-        player.sendMessage(messages.msg("home-teleported", "home", pendingHome));
+        teleportHome(player, location, pendingHome);
+    }
+
+    public void teleportHome(Player player, Location location, String homeName) {
+        player.setVelocity(new Vector(0, 0, 0));
+        player.teleportAsync(location).thenAccept(success -> player.getScheduler().run(this, task -> {
+            if (success) {
+                player.sendMessage(messages.msg("home-teleported", "home", homeName));
+            } else {
+                player.sendMessage(messages.msg("home-world-unavailable"));
+            }
+        }, () -> {}));
     }
 
     public void connectToServer(Player player, String server) {

@@ -12,7 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Vector;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -50,7 +49,7 @@ public class HomeCMD implements BasicCommand {
         UUID targetUUID = player.getUniqueId();
 
         // Staff: player:home
-        if (player.hasPermission("vsmp.homes.staff") && args[0].contains(":")) {
+        if (player.hasPermission("homesystem.homes.staff") && args[0].contains(":")) {
             String[] parts = args[0].split(":", 2);
 
             if (parts.length != 2) {
@@ -90,9 +89,11 @@ public class HomeCMD implements BasicCommand {
             return;
         }
 
-        player.setVelocity(new Vector(0, 0, 0));
-        player.teleport(location);
-        player.sendMessage(messages.msg("home-teleported", "home", homeName));
+        if (plugin instanceof me.shingas.homeSystem.HomeSystem homeSystem) {
+            homeSystem.teleportHome(player, location, homeName);
+        } else {
+            player.sendMessage(messages.msg("home-world-unavailable"));
+        }
     }
 
     @Override
@@ -111,7 +112,7 @@ public class HomeCMD implements BasicCommand {
             String input = args[0];
 
             // STAFF: /home player:
-            if ((player.hasPermission("vsmp.homes.staff") || player.isOp()) && input.contains(":")) {
+            if ((player.hasPermission("homesystem.homes.staff") || player.isOp()) && input.contains(":")) {
                 String[] parts = input.split(":", 2);
 
                 String targetName = parts[0];

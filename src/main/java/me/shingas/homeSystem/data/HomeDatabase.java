@@ -1,5 +1,7 @@
 package me.shingas.homeSystem.data;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
@@ -16,6 +18,8 @@ public final class HomeDatabase implements AutoCloseable {
     private final String password;
     private final String homesTable;
     private final String pendingTable;
+    private final HikariDataSource dataSource;
+    private boolean closed;
 
     public HomeDatabase(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -35,12 +39,26 @@ public final class HomeDatabase implements AutoCloseable {
         this.url = "jdbc:mysql://" + host + ":" + port + "/" + database
                 + "?useSSL=false&serverTimezone=UTC";
 
+        HikariConfig pool = new HikariConfig();
+        pool.setJdbcUrl(url);
+        pool.setUsername(username);
+        pool.setPassword(password);
+        pool.setPoolName("HomeSystem-MySQL");
+        pool.setMaximumPoolSize(plugin.getConfig().getInt("database.pool.maximumSize", 5));
+        pool.setMinimumIdle(plugin.getConfig().getInt("database.pool.minimumIdle", 1));
+        pool.setConnectionTimeout(plugin.getConfig().getLong("database.pool.connectionTimeout", 5000L));
+        pool.setIdleTimeout(plugin.getConfig().getLong("database.pool.idleTimeout", 600000L));
+        pool.setMaxLifetime(plugin.getConfig().getLong("database.pool.maxLifetime", 1800000L));
+        this.dataSource = new HikariDataSource(pool);
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             initialize();
         } catch (ClassNotFoundException e) {
+            dataSource.close();
             throw new IllegalStateException("MySQL JDBC driver is not available", e);
         } catch (SQLException e) {
+            dataSource.close();
             throw new IllegalStateException("Could not initialize the home database", e);
         }
     }
@@ -54,7 +72,8 @@ public final class HomeDatabase implements AutoCloseable {
     }
 
     private Connection connection() throws SQLException {
-        return DriverManager.getConnection(url, username, password);
+        if (closed) throw new SQLException("Database connection pool is closed.");
+        return dataSource.getConnection();
     }
 
     private void initialize() throws SQLException {
@@ -187,7 +206,10 @@ public final class HomeDatabase implements AutoCloseable {
     }
 
     @Override
-    public void close() {
-        // Connections are short-lived and are closed after each operation.
+    public synchronized void close() {
+        if (!closed) {
+            closed = true;
+            dataSource.close();
+        }
     }
 }

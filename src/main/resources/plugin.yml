@@ -9,3 +9,4 @@ description: Per-player homes with per-world and permission-based limits.
 depend: [ "GriefPrevention" ]
 libraries:
   - "com.mysql:mysql-connector-j:9.2.0"
+  - "com.zaxxer:HikariCP:6.3.0"
